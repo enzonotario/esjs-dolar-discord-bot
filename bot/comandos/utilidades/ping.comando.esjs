@@ -1,0 +1,9 @@
+importar { SlashCommandBuilder } desde 'discord.js'
+
+exportar const datos = crear SlashCommandBuilder()
+  .setName('ping')
+  .setDescription('Responde con Pong!')
+
+exportar asincrono funcion ejecutar(interaction) {
+  esperar interaction.reply('Pong!')
+}

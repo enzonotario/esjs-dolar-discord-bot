@@ -1,0 +1,53 @@
+importar { Client, Collection, Events, GatewayIntentBits } desde 'discord.js'
+importar { comandos } desde '@/comandos/comandos.esjs'
+
+// Crea una instancia del cliente con la intención de recibir eventos de servidores.
+const client = crear Client({ intents: [GatewayIntentBits.Guilds] })
+
+// Carga los comandos en una colección
+client.commands = crear Collection()
+para (const comando de comandos) {
+  client.commands.set(comando.nombre, comando.comando)
+}
+
+// Cuando el cliente está listo, ejecuta este código (solo una vez).
+client.once(Events.ClientReady, (readyClient) => {
+  const appId = importar.meta.env.VITE_DISCORD_APPLICATION_ID
+  const urlInvitacion = `https://discord.com/oauth2/authorize?client_id=${appId}&scope=applications.commands`
+
+  consola.escribir(`¡Listo! Iniciado como ${readyClient.user.tag}`)
+  consola.escribir(`URL de invitación: ${urlInvitacion}`)
+})
+
+// Cuando el cliente recibe un evento de interacción, ejecuta este código.
+client.on(Events.InteractionCreate, asincrono (interaction) => {
+  si (!interaction.isChatInputCommand()) retornar
+  const comando = interaction.client.commands.get(interaction.commandName)
+
+  si (!comando) {
+    consola.error(
+      `No se encontró ningún comando que coincida con ${interaction.commandName}.`,
+    )
+    retornar
+  }
+
+  intentar {
+    esperar comando.ejecutar(interaction)
+  } capturar (error) {
+    consola.error(error)
+    si (interaction.replied || interaction.deferred) {
+      esperar interaction.followUp({
+        content: 'Ocurrió un error al ejecutar este comando',
+        ephemeral: verdadero,
+      })
+    } sino {
+      esperar interaction.reply({
+        content: 'Ocurrió un error al ejecutar este comando',
+        ephemeral: verdadero,
+      })
+    }
+  }
+})
+
+// Inicia sesión en Discord con el token del Bot.
+client.login(importar.meta.env.VITE_DISCORD_TOKEN)

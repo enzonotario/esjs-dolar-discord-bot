@@ -1,0 +1,31 @@
+importar { REST } desde 'discord.js'
+importar { Routes } desde 'discord-api-types/v9'
+importar { comandos } desde '@/comandos/comandos.esjs'
+
+// Crea y prepara una instancia del módulo REST
+const rest = crear REST().setToken(importar.meta.env.VITE_DISCORD_TOKEN)
+
+// Actualiza los comandos de la aplicación (/) en un servidor
+;(asincrono () => {
+  intentar {
+    consola.escribir(
+      `Empezando a actualizar ${comandos.length} comandos de aplicación (/).`,
+    )
+
+    // El método put se usa para actualizar completamente todos los comandos en el servidor con el conjunto actual
+    const respuesta = esperar rest.put(
+      Routes.applicationGuildCommands(
+        importar.meta.env.VITE_DISCORD_APPLICATION_ID,
+        importar.meta.env.VITE_DISCORD_GUILD_ID,
+      ),
+      { body: comandos.mapear((comando) => comando.comando.datos.aJSON()) },
+    )
+
+    consola.escribir(
+      `Se actualizaron exitosamente ${respuesta.length} comandos de aplicación (/).`,
+    )
+  } capturar (error) {
+    // En caso de error, asegúrate de capturar y registrar cualquier error!
+    consola.error(error)
+  }
+})()

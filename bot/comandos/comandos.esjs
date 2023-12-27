@@ -1,0 +1,18 @@
+importar * as ping desde '@/comandos/utilidades/ping.comando.esjs'
+
+funcion registrarComando(comando) {
+  si (!comando.datos || !comando.ejecutar) {
+    consola.escribir(
+      `[ADVERTENCIA] El comando en ${comando} no tiene una propiedad "datos" o "ejecutar" requerida.`,
+    )
+  }
+
+  retornar {
+    nombre: comando.datos.name,
+    comando,
+  }
+}
+
+exportar const comandos = [
+  registrarComando(ping),
+]
