@@ -1,0 +1,9 @@
+importar { SlashCommandBuilder } desde 'discord.js'
+
+exportar const datos = crear SlashCommandBuilder()
+  .setName('dolarkombat')
+  .setDescription('Cotización del Dólar en la torre de Mortal Kombat')
+
+exportar asincrono funcion ejecutar(interaction) {
+  esperar interaction.reply('https://kombat.dolarapi.com/')
+}

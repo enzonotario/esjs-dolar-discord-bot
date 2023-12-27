@@ -1,0 +1,8 @@
+importar { format, register } desde 'timeago.js'
+importar es desde 'timeago.js/lib/lang/es'
+
+register('es', es.porDefecto)
+
+exportar funcion haceCuantoTiempo(fecha) {
+  retornar format(fecha, 'es')
+}

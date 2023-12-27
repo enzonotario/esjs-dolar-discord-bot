@@ -1,4 +1,5 @@
-importar * as ping desde '@/comandos/utilidades/ping.comando.esjs'
+importar * as dolares desde '@/comandos/dolares/dolares.comando.esjs'
+importar * as dolarkombat desde '@/comandos/dolares/dolarkombat.comando.esjs'
 
 funcion registrarComando(comando) {
   si (!comando.datos || !comando.ejecutar) {
@@ -14,5 +15,6 @@ funcion registrarComando(comando) {
 }
 
 exportar const comandos = [
-  registrarComando(ping),
+  registrarComando(dolares),
+  registrarComando(dolarkombat),
 ]

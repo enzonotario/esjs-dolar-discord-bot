@@ -1,0 +1,8 @@
+importar { format, setDefaultOptions } desde 'date-fns'
+importar { es } desde 'date-fns/locale'
+
+setDefaultOptions({ locale: es })
+
+exportar funcion formatearFecha(fecha, formato) {
+  retornar format(fecha, formato)
+}

@@ -1,4 +1,5 @@
-app = "esjs-discord-bot"
+app = "esjs-dolar-discord-bot"
+primary_region = "sea"
 
 [build]
 

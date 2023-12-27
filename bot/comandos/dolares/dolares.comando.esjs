@@ -1,0 +1,64 @@
+importar { SlashCommandBuilder, EmbedBuilder } desde 'discord.js'
+importar { dolarapi } desde '@/api/dolarapi.esjs'
+importar { haceCuantoTiempo } desde '@/utilidades/haceCuantoTiempo.esjs'
+importar { formatearFecha } desde '@/utilidades/formatearFecha.esjs'
+importar { upperFirst } desde 'tiny-case'
+
+exportar const datos = crear SlashCommandBuilder()
+  .setName('dolares')
+  .setDescription('Responde con las cotizaciones del Dolar en Argentina')
+
+exportar asincrono funcion ejecutar(interaction) {
+  intentar {
+    const dolares = esperar dolarapi('/dolares')
+    const hoy = crear Fecha()
+    const fechaActualizacion = crear Fecha(dolares[0].fechaActualizacion)
+    const fechaActualizacionFormateada = formatearFecha(
+      fechaActualizacion,
+      'dd/MM/yyyy HH:mm',
+    )
+
+    esperar interaction.reply({
+      embeds: [
+        crear EmbedBuilder()
+          .setTitle(
+            `Cotizaciones del Dólar en Argentina: ${upperFirst(
+              formatearFecha(hoy, "EEEE, 'de' d MMMM"),
+            )}`,
+          )
+          .setDescription(
+            `Fecha de actualización: ${fechaActualizacionFormateada} (${haceCuantoTiempo(
+              fechaActualizacion,
+            )})`,
+          )
+          .setURL('https://dolarapi.com/')
+          .setAuthor({
+            name: 'DolarApi.com',
+            iconURL: 'https://dolarapi.com/assets/logo.png',
+            url: 'https://dolarapi.com/',
+          })
+          .setColor('#00ff00')
+          .setFooter({
+            text: 'Fuente: DolarApi.com',
+            iconURL: 'https://dolarapi.com/assets/logo.png',
+          })
+          .setTimestamp()
+          .addFields(
+            dolares.mapear((dolar) => {
+              retornar {
+                name: dolar.nombre,
+                valor: `Compra: $${dolar.compra}\nVenta: $${dolar.venta}`,
+                inline: verdadero,
+              }
+            }),
+          ),
+      ],
+    })
+  } capturar (error) {
+    consola.error(error)
+
+    esperar interaction.reply(
+      'Ocurrió un error al intentar obtener las cotizaciones del Dólar',
+    )
+  }
+}
